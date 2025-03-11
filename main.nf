@@ -7,6 +7,8 @@ log.info """\
     """
     .stripIndent(true)
 
+include { GATK4_SPLITNCIGARREADS } from './modules/gatk/main.nf'
+
 workflow {
     Channel.fromPath(params.samplesheet)
     | splitCsv( header: true )
@@ -17,4 +19,6 @@ workflow {
     | set { ch_input_prepare }
 
     ch_input_prepare.view { "Value: $it" }
+
+    GATK4_SPLITNCIGARREADS(ch_input_prepare, params.fasta, params.fai, params.dict)
 }
