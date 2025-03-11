@@ -1,7 +1,5 @@
 nextflow.enable.dsl = 2
 
-params.samplesheet = "./assets/samplesheet.csv"
-
 log.info """\
     RNASEQ - VARCALL _ W F   P I P E L I N E
     ===================================
