@@ -132,8 +132,7 @@ process GATK4_APPLYBQSR {
         tuple val(meta5), path(dict)
 
     output:
-        tuple val(meta), path("*.bam") , emit: bam,  optional: true
-        tuple val(meta), path("*.cram"), emit: cram, optional: true
+        tuple val(meta), path("*.bam"), path("*.bai") , emit: bam
         path "versions.yml"            , emit: versions
 
     when:
@@ -152,10 +151,10 @@ process GATK4_APPLYBQSR {
         gatk --java-options "-Xmx${avail_mem}M -XX:-UsePerfData" \\
             ApplyBQSR \\
             --input $input \\
-            --output ${prefix}.applybqsr${input.getExtension()} \\
+            --output ${prefix}.applybqsr.${input.getExtension()} \\
             --reference $fasta \\
             --bqsr-recal-file $bqsr_table \\
-            --tmp-dir . 
+            --tmp-dir . --create-output-bam-index true
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

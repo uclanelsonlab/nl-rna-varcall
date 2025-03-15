@@ -10,7 +10,7 @@ log.info """\
     """
     .stripIndent(true)
 
-include { GATK4_SPLITNCIGARREADS; GATK4_BASERECALIBRATOR; GATK4_APPLYBQSR } from './modules/gatk/main.nf'
+include { GATK4_SPLITNCIGARREADS; GATK4_BASERECALIBRATOR; GATK4_APPLYBQSR; GATK4_HAPLOTYPECALLER } from './modules/gatk/main.nf'
 
 workflow {
     Channel.fromPath(params.samplesheet)
@@ -33,7 +33,7 @@ workflow {
     // ch_dbsnp.view { "Value: $it" }
     
     GATK4_SPLITNCIGARREADS(ch_input_prepare, ch_fasta, ch_fai, ch_dict)
-    
+
     GATK4_BASERECALIBRATOR(
         GATK4_SPLITNCIGARREADS.out.bam, 
         ch_fasta, 
@@ -46,4 +46,5 @@ workflow {
         ch_small_exac_common_3)
 
     GATK4_APPLYBQSR(GATK4_SPLITNCIGARREADS.out.bam, GATK4_BASERECALIBRATOR.out.table, ch_fasta, ch_fai, ch_dict)
+    GATK4_HAPLOTYPECALLER(GATK4_APPLYBQSR.out.bam, ch_fasta, ch_fai, ch_dict, ch_dbsnp)
 }
