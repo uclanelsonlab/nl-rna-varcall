@@ -1,0 +1,23 @@
+{
+    "gatk_docker": {
+        "description": "ECR image URI for GATK4 docker image"
+    },
+    "sample_name": {
+        "description": "Sample name"
+    },
+    "alignment": {
+        "description": "CRAM/BAM aligned file"
+    },
+    "alignment_index": {
+        "description": "Index for the BAM/CRAM file"
+    },
+    "fasta": {
+        "description": "Reference fasta file"
+    },
+    "fai": {
+        "description": "Index for the reference fasta file"
+    },
+    "dict": {
+        "description": "Dictionary for the reference fasta file"
+    }
+}

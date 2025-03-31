@@ -1,0 +1,9 @@
+{
+    "gatk_docker": "693308978387.dkr.ecr.us-west-2.amazonaws.com/biocontainers/gatk4:latest",
+    "sample_name": "NA12878",
+    "alignment":  "s3://omics-sequence-stanlab-2025-03-06/data/sequences/NA12878/NA12878.bam",
+    "alignment_index": "s3://omics-sequence-stanlab-2025-03-06/data/sequences/NA12878/NA12878.bam.bai",
+    "fasta": "s3://broad-references/hg19/v0/Homo_sapiens_assembly19.fasta",
+    "fai": "s3://broad-references/hg19/v0/Homo_sapiens_assembly19.fasta.fai",
+    "dict": "s3://broad-references/hg19/v0/Homo_sapiens_assembly19.dict"
+}
