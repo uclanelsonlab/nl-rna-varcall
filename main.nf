@@ -24,24 +24,20 @@ workflow {
     ch_dbsnp = Channel.value([[id:"dbsnp138"], params.dbsnp138, params.dbsnp138_index])
     ch_known_indels = Channel.value([[id:"known_indels"], params.known_indels, params.known_indels_index])
     ch_indels_1000G = Channel.value([[id:"indels_1000G"], params.indels_1000G, params.indels_1000G_index])
-    // ch_af_only_gnomad = Channel.value([[id:"af_only_gnomad"], params.af_only_gnomad, params.af_only_gnomad_index])
-    // ch_small_exac_common_3 = Channel.value([[id:"small_exac_common_3"], params.small_exac_common_3, params.small_exac_common_3_index])
 
     // ch_dbsnp.view { "Value: $it" }
     
     GATK4_SPLITNCIGARREADS(ch_input_prepare, ch_fasta, ch_fai, ch_dict)
 
-    // GATK4_BASERECALIBRATOR(
-    //     GATK4_SPLITNCIGARREADS.out.bam, 
-    //     ch_fasta, 
-    //     ch_fai, 
-    //     ch_dict, 
-    //     ch_dbsnp,
-    //     ch_known_indels,
-    //     ch_indels_1000G,
-    //     ch_af_only_gnomad,
-    //     ch_small_exac_common_3)
+    GATK4_BASERECALIBRATOR(
+        GATK4_SPLITNCIGARREADS.out.bam, 
+        ch_fasta, 
+        ch_fai, 
+        ch_dict, 
+        ch_dbsnp,
+        ch_known_indels,
+        ch_indels_1000G)
 
-    // GATK4_APPLYBQSR(GATK4_SPLITNCIGARREADS.out.bam, GATK4_BASERECALIBRATOR.out.table, ch_fasta, ch_fai, ch_dict)
-    // GATK4_HAPLOTYPECALLER(GATK4_APPLYBQSR.out.bam, ch_fasta, ch_fai, ch_dict, ch_dbsnp)
+    GATK4_APPLYBQSR(GATK4_SPLITNCIGARREADS.out.bam, GATK4_BASERECALIBRATOR.out.table, ch_fasta, ch_fai, ch_dict)
+    GATK4_HAPLOTYPECALLER(GATK4_APPLYBQSR.out.bam, ch_fasta, ch_fai, ch_dict, ch_dbsnp)
 }

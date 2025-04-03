@@ -1,7 +1,6 @@
 process GATK4_SPLITNCIGARREADS {
     tag "${meta.id}"
     label "SplitNCigarReads"
-    container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
     memory 32.GB
     cpus 16
 
@@ -56,7 +55,6 @@ process GATK4_SPLITNCIGARREADS {
 process GATK4_BASERECALIBRATOR {
     tag "$meta.id"
     label 'BaseRecalibrator'
-    container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
     memory 32.GB
     cpus 16
 
@@ -68,8 +66,6 @@ process GATK4_BASERECALIBRATOR {
         tuple val(meta5), path(dbsnp138), path(dbsnp138_index)
         tuple val(meta6), path(known_indels), path(known_indels_index)
         tuple val(meta7), path(indels_1000G), path(indels_1000G_index)
-        tuple val(meta8), path(af_only_gnomad), path(af_only_gnomad_index)
-        tuple val(meta9), path(small_exac_common_3), path(small_exac_common_3_index)
 
     output:
         tuple val(meta), path("*.table"), emit: table
@@ -96,8 +92,6 @@ process GATK4_BASERECALIBRATOR {
             --known-sites ${dbsnp138} \\
             --known-sites ${known_indels} \\
             --known-sites ${indels_1000G} \\
-            --known-sites ${af_only_gnomad} \\
-            --known-sites ${small_exac_common_3} \\
             --tmp-dir .
 
         cat <<-END_VERSIONS > versions.yml
@@ -120,7 +114,6 @@ process GATK4_BASERECALIBRATOR {
 process GATK4_APPLYBQSR {
     tag "$meta.id"
     label 'ApplyBQSR'
-    container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
     memory 32.GB
     cpus 16
 
@@ -179,7 +172,6 @@ process GATK4_APPLYBQSR {
 process GATK4_HAPLOTYPECALLER {
     tag "$meta.id"
     label 'process_low'
-    container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
     memory 32.GB
     cpus 16
 

@@ -3,7 +3,7 @@
         "description": "ECR image URI for GATK4 docker image"
     },
     "sample_name": {
-        "description": "Sample name"
+        "description": "Sample Name."
     },
     "alignment": {
         "description": "CRAM/BAM aligned file"
@@ -19,5 +19,23 @@
     },
     "dict": {
         "description": "Dictionary for the reference fasta file"
+    },
+    "dbsnp138": {
+        "description": "VCF reference file from dbsnp138"
+    },
+    "dbsnp138_index": {
+        "description": "Index for dbsnp138 VCF"
+    },
+    "known_indels": {
+        "description": "VCF reference file from  known indels"
+    },
+    "known_indels_index": {
+        "description": "Index for 1000 genomes known indels VCF"
+    },
+    "indels_1000G": {
+        "description": "VCF reference for 1000 genomes indels"
+    },
+    "indels_1000G_index": {
+        "description": "Index for 1000 genomes indels VCF"
     }
 }
