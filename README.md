@@ -16,8 +16,8 @@ zip -r nl-rna-varcall.zip *
 - Reference samples you can use to validate it:
 ```bash
 # DNA sample
-aws s3 cp s3://gatk-test-data/rna_bam/NA12878_b37/NA12878.bam .
-aws s3 cp s3://gatk-test-data/rna_bam/NA12878_b37/NA12878.bam.bai .
+s3 cp s3://gatk-test-data/rna_bam/NA12878_b37/NA12878.bam
+s3://gatk-test-data/rna_bam/NA12878_b37/NA12878.bam.bai
 
 # Reference:
 s3://broad-references/hg19/v0/human_g1k_v37_decoy.fasta
