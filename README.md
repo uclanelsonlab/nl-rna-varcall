@@ -27,6 +27,6 @@ s3://broad-references/hg19/v0/Homo_sapiens_assembly19.dbsnp138.vcf
 s3://broad-references/hg19/v0/Homo_sapiens_assembly19.dbsnp138.vcf.idx
 s3://broad-references/hg19/v0/Homo_sapiens_assembly19.known_indels_20120518.vcf
 s3://broad-references/hg19/v0/Homo_sapiens_assembly19.known_indels_20120518.vcf.idx
-"s3://broad-references/hg19/v0/Mills_and_1000G_gold_standard.indels.b37.vcf.gz
+s3://broad-references/hg19/v0/Mills_and_1000G_gold_standard.indels.b37.vcf.gz
 s3://broad-references/hg19/v0/Mills_and_1000G_gold_standard.indels.b37.vcf.gz.tbi
 ```
