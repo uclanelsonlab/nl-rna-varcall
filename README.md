@@ -37,4 +37,9 @@ nextflow run main.nf --samplesheet /path/to/samplesheet.csv
 
 ## The outputs
 - If you follow the previous command the outputs are located in `/path/to/nl-rna-varcall/results/`.
-
+```bash
+results/
+├── CDMD1601.hc.vcf.gz -> /path/to/nl-rna-varcall/work/13/69c2a9b6e084a7b14e64763a530001/CDMD1601.hc.vcf.gz
+├── CDMD1601.hc.vcf.gz.tbi -> /path/to/nl-rna-varcall/work/13/69c2a9b6e084a7b14e64763a530001/CDMD1601.hc.vcf.gz.tbi
+└── versions.yml -> /path/to/nl-rna-varcall/work/13/69c2a9b6e084a7b14e64763a530001/versions.yml
+```
