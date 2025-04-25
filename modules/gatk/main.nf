@@ -180,6 +180,7 @@ process GATK4_HAPLOTYPECALLER {
     tag "$meta.id"
     label 'process_low'
     container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
+    publishDir params.outdir, mode:'symlink'
     memory 32.GB
     cpus 16
 
