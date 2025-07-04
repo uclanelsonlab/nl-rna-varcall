@@ -2,8 +2,8 @@ process GATK4_SPLITNCIGARREADS {
     tag "${meta.id}"
     label "SplitNCigarReads"
     container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
-    memory 32.GB
-    cpus 16
+    memory 200.GB
+    cpus 48
 
     input:
         tuple val(meta), path(bam), path(bai)
@@ -57,8 +57,8 @@ process GATK4_BASERECALIBRATOR {
     tag "$meta.id"
     label 'BaseRecalibrator'
     container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
-    memory 32.GB
-    cpus 16
+    memory 200.GB
+    cpus 48
 
     input:
         tuple val(meta), path(input), path(input_index)
@@ -121,8 +121,8 @@ process GATK4_APPLYBQSR {
     tag "$meta.id"
     label 'ApplyBQSR'
     container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
-    memory 32.GB
-    cpus 16
+    memory 200.GB
+    cpus 48
 
     input:
         tuple val(meta), path(input), path(input_index)
@@ -181,8 +181,8 @@ process GATK4_HAPLOTYPECALLER {
     label 'process_low'
     container 'quay.io/biocontainers/gatk4:4.6.1.0--py310hdfd78af_0'
     publishDir params.outdir, mode:'symlink'
-    memory 32.GB
-    cpus 16
+    memory 200.GB
+    cpus 48
 
     input:
         tuple val(meta),  path(input), path(input_index)
