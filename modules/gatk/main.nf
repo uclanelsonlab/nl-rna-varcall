@@ -7,9 +7,7 @@ process GATK4_SPLITNCIGARREADS {
 
     input:
         tuple val(meta), path(bam), path(bai)
-        tuple val(meta2), path(fasta)
-        tuple val(meta3), path(fai)
-        tuple val(meta4), path(dict)
+        tuple val(meta2), path(fasta), path(fai), path(dict)
         
     output:
         tuple val(meta), path('*.bam'), path ('*.bai'), emit: bam
@@ -62,9 +60,7 @@ process GATK4_BASERECALIBRATOR {
 
     input:
         tuple val(meta), path(input), path(input_index)
-        tuple val(meta2), path(fasta)
-        tuple val(meta3), path(fai)
-        tuple val(meta4), path(dict)
+        tuple val(meta2), path(fasta), path(fai), path(dict)
         tuple val(meta5), path(dbsnp138), path(dbsnp138_index)
         tuple val(meta6), path(known_indels), path(known_indels_index)
         tuple val(meta7), path(indels_1000G), path(indels_1000G_index)
@@ -127,9 +123,7 @@ process GATK4_APPLYBQSR {
     input:
         tuple val(meta), path(input), path(input_index)
         tuple val(meta2), path(bqsr_table)
-        tuple val(meta3), path(fasta)
-        tuple val(meta4), path(fai)
-        tuple val(meta5), path(dict)
+        tuple val(meta2), path(fasta), path(fai), path(dict)
 
     output:
         tuple val(meta), path("*.bam"), path("*.bai") , emit: bam
@@ -186,9 +180,7 @@ process GATK4_HAPLOTYPECALLER {
 
     input:
         tuple val(meta),  path(input), path(input_index)
-        tuple val(meta2), path(fasta)
-        tuple val(meta3), path(fai)
-        tuple val(meta4), path(dict)
+        tuple val(meta2), path(fasta), path(fai), path(dict)
         tuple val(meta5), path(dbsnp), path(dbsnp_tbi)
 
     output:
