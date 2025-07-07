@@ -14,3 +14,17 @@ process DOWNLOAD_ALIGNMENT {
     aws s3 cp ${index} .
     """
 }
+
+process UPLOAD_VARCALL {
+    tag "${meta.id}"
+    label "Upload variant calling files"
+
+    input:
+        tuple val(meta), path(vcf), path(index)
+
+    script:
+    """
+    aws s3 cp ${vcf} ${meta.s3_path}/hc/
+    aws s3 cp ${index} ${meta.s3_path}/hc/
+    """
+}

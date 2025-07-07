@@ -13,6 +13,7 @@ log.info """\
 include { GATK4_SPLITNCIGARREADS; GATK4_BASERECALIBRATOR; GATK4_APPLYBQSR; GATK4_HAPLOTYPECALLER } from './modules/gatk/main.nf'
 include { SAMTOOLS_CONVERT2BAM } from './modules/samtools/main.nf'
 include { DOWNLOAD_ALIGNMENT } from './modules/download_upload/main.nf'
+include { UPLOAD_VARCALL } from './modules/download_upload/main.nf'
 
 workflow {
     Channel.fromPath(params.samplesheet)
@@ -26,7 +27,7 @@ workflow {
         } else {
             error "Alignment file '${row.alignment}' for sample '${row.sample}' must end with .bam or .cram"
         }
-        def meta = [id:row.sample, sample:row.sample]
+        def meta = [id:row.sample, sample:row.sample, s3_path:row.s3_path]
         [meta, row.alignment, row.index, extension]
     }
     | set { ch_input_prepare }
@@ -54,6 +55,7 @@ workflow {
         GATK4_SPLITNCIGARREADS(DOWNLOAD_ALIGNMENT.out.alignment, ch_reference)
     }
 
+    // BaseRecalibrator
     GATK4_BASERECALIBRATOR(
         GATK4_SPLITNCIGARREADS.out.bam, 
         ch_reference, 
@@ -63,6 +65,12 @@ workflow {
         ch_af_only_gnomad,
         ch_small_exac_common_3)
 
+    // ApplyBQSR    
     GATK4_APPLYBQSR(GATK4_SPLITNCIGARREADS.out.bam, GATK4_BASERECALIBRATOR.out.table, ch_reference)
+
+    // HaplotypeCaller
     GATK4_HAPLOTYPECALLER(GATK4_APPLYBQSR.out.bam, ch_reference, ch_dbsnp)
+
+    // Upload variant calling files
+    UPLOAD_VARCALL(GATK4_HAPLOTYPECALLER.out.vcf_files)
 }

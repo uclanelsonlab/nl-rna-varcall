@@ -184,9 +184,8 @@ process GATK4_HAPLOTYPECALLER {
         tuple val(meta5), path(dbsnp), path(dbsnp_tbi)
 
     output:
-        tuple val(meta), path("*.vcf.gz")       , emit: vcf
-        tuple val(meta), path("*.tbi")          , optional:true, emit: tbi
-        path "versions.yml"                     , emit: versions
+        tuple val(meta), path("*.vcf.gz"), path("*.vcf.gz.tbi"),    emit: vcf_files
+        path "versions.yml",                                        emit: versions
 
     when:
         task.ext.when == null || task.ext.when
