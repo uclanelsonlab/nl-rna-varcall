@@ -28,3 +28,41 @@ process UPLOAD_VARCALL {
     aws s3 cp ${index} ${meta.s3_path}/hc/
     """
 }
+
+process DOWNLOAD_REFERENCE {
+    tag "${meta.id}"
+    label "Download reference files"
+
+    input:
+        tuple val(meta), path(fasta), path(fai), path(dict)
+        tuple val(meta), path(dbsnp), path(dbsnp_index)
+        tuple val(meta), path(known_indels), path(known_indels_index)
+        tuple val(meta), path(indels_1000G), path(indels_1000G_index)
+        tuple val(meta), path(af_only_gnomad), path(af_only_gnomad_index)
+        tuple val(meta), path(small_exac_common_3), path(small_exac_common_3_index) 
+
+    output:
+        tuple val(meta), path('*.fasta'), path('*.fai'), path('*.dict'), emit: reference
+        tuple val(meta), path('*.dbsnp138.vcf.gz'), path('*.dbsnp138.vcf.gz.tbi'), emit: dbsnp
+        tuple val(meta), path('*.known_indels.vcf.gz'), path('*.known_indels.vcf.gz.tbi'), emit: known_indels
+        tuple val(meta), path('*.indels_1000G.vcf.gz'), path('*.indels_1000G.vcf.gz.tbi'), emit: indels_1000G
+        tuple val(meta), path('af-only-gnomad.hg38.vcf.gz'), path('af-only-gnomad.hg38.vcf.gz.tbi'), emit: af_only_gnomad
+        tuple val(meta), path('small_exac_common_3.hg38.vcf.gz'), path('small_exac_common_3.hg38.vcf.gz.tbi'), emit: small_exac_common_3
+
+    script:
+        """
+        aws s3 cp ${fasta} .
+        aws s3 cp ${fai} .
+        aws s3 cp ${dict} .
+        aws s3 cp ${dbsnp} .
+        aws s3 cp ${dbsnp_index} .
+        aws s3 cp ${known_indels} .
+        aws s3 cp ${known_indels_index} .
+        aws s3 cp ${indels_1000G} .
+        aws s3 cp ${indels_1000G_index} .
+        aws s3 cp ${af_only_gnomad} .
+        aws s3 cp ${af_only_gnomad_index} .
+        aws s3 cp ${small_exac_common_3} .
+        aws s3 cp ${small_exac_common_3_index} .
+        """
+}

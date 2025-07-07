@@ -44,32 +44,42 @@ workflow {
     ch_af_only_gnomad = Channel.value([[id:"af_only_gnomad"], params.af_only_gnomad, params.af_only_gnomad_index])
     ch_small_exac_common_3 = Channel.value([[id:"small_exac_common_3"], params.small_exac_common_3, params.small_exac_common_3_index])
 
+    // Download reference files
+    DOWNLOAD_REFERENCE(
+        ch_reference, 
+        ch_dbsnp, 
+        ch_known_indels, 
+        ch_indels_1000G, 
+        ch_af_only_gnomad, 
+        ch_small_exac_common_3
+    )
+
     // Download alignment files
     DOWNLOAD_ALIGNMENT(ch_input_prepare)
 
     // Check if we need to transform the alignment file to bam
     if (ch_input_prepare.extension == 'cram') {
-        SAMTOOLS_CONVERT2BAM(DOWNLOAD_ALIGNMENT.out.alignment, ch_reference)
-        GATK4_SPLITNCIGARREADS(SAMTOOLS_CONVERT2BAM.out.bam, ch_reference)
+        SAMTOOLS_CONVERT2BAM(DOWNLOAD_ALIGNMENT.out.alignment, DOWNLOAD_REFERENCE.out.reference)
+        GATK4_SPLITNCIGARREADS(SAMTOOLS_CONVERT2BAM.out.bam, DOWNLOAD_REFERENCE.out.reference)
     } else {
-        GATK4_SPLITNCIGARREADS(DOWNLOAD_ALIGNMENT.out.alignment, ch_reference)
+        GATK4_SPLITNCIGARREADS(DOWNLOAD_ALIGNMENT.out.alignment, DOWNLOAD_REFERENCE.out.reference)
     }
 
     // BaseRecalibrator
     GATK4_BASERECALIBRATOR(
         GATK4_SPLITNCIGARREADS.out.bam, 
-        ch_reference, 
-        ch_dbsnp,
-        ch_known_indels,
-        ch_indels_1000G,
-        ch_af_only_gnomad,
-        ch_small_exac_common_3)
+        DOWNLOAD_REFERENCE.out.reference, 
+        DOWNLOAD_REFERENCE.out.dbsnp,
+        DOWNLOAD_REFERENCE.out.known_indels,
+        DOWNLOAD_REFERENCE.out.indels_1000G,
+        DOWNLOAD_REFERENCE.out.af_only_gnomad,
+        DOWNLOAD_REFERENCE.out.small_exac_common_3)
 
     // ApplyBQSR    
-    GATK4_APPLYBQSR(GATK4_SPLITNCIGARREADS.out.bam, GATK4_BASERECALIBRATOR.out.table, ch_reference)
+    GATK4_APPLYBQSR(GATK4_SPLITNCIGARREADS.out.bam, GATK4_BASERECALIBRATOR.out.table, DOWNLOAD_REFERENCE.out.reference)
 
     // HaplotypeCaller
-    GATK4_HAPLOTYPECALLER(GATK4_APPLYBQSR.out.bam, ch_reference, ch_dbsnp)
+    GATK4_HAPLOTYPECALLER(GATK4_APPLYBQSR.out.bam, DOWNLOAD_REFERENCE.out.reference, DOWNLOAD_REFERENCE.out.dbsnp)
 
     // Upload variant calling files
     UPLOAD_VARCALL(GATK4_HAPLOTYPECALLER.out.vcf_files)
