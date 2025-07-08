@@ -15,7 +15,7 @@ This pipeline implements a complete RNA-seq variant calling workflow that includ
 ## Architecture
 
 ```mermaid
-graph TD
+flowchart TD
     A[Samplesheet CSV] --> B[Parse & Validate]
     B --> C{File Format?}
     C -->|CRAM| D[Download Alignment]
@@ -29,35 +29,14 @@ graph TD
     I --> J[GATK4 HaplotypeCaller]
     J --> K[Upload VCF Files]
     
-    subgraph "Reference Files"
-        R1[FASTA]
-        R2[FAI Index]
-        R3[DICT]
-        R4[dbSNP138]
-        R5[Known Indels]
-        R6[1000G Indels]
-        R7[gnomAD AF]
-        R8[ExAC Common]
-    end
-    
-    subgraph "Quality Control"
-        QC1[SplitNCigarReads]
-        QC2[BaseRecalibrator]
-        QC3[ApplyBQSR]
-    end
-    
-    subgraph "Variant Calling"
-        VC1[HaplotypeCaller]
-    end
-    
-    R1 --> G
-    R2 --> G
-    R3 --> G
-    R4 --> H
-    R5 --> H
-    R6 --> H
-    R7 --> H
-    R8 --> H
+    R1[FASTA] --> G
+    R2[FAI Index] --> G
+    R3[DICT] --> G
+    R4[dbSNP138] --> H
+    R5[Known Indels] --> H
+    R6[1000G Indels] --> H
+    R7[gnomAD AF] --> H
+    R8[ExAC Common] --> H
 ```
 
 ## Pipeline Steps
