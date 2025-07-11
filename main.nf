@@ -10,7 +10,7 @@ log.info """\
     """
     .stripIndent(true)
 
-include { GATK4_SPLITNCIGARREADS; GATK4_BASERECALIBRATOR; GATK4_APPLYBQSR; GATK4_HAPLOTYPECALLER } from './modules/gatk/main.nf'
+include { GATK4_SPLITNCIGARREADS as GATK4_SPLITNCIGARREADS_BAM; GATK4_SPLITNCIGARREADS as GATK4_SPLITNCIGARREADS_CRAM; GATK4_BASERECALIBRATOR; GATK4_APPLYBQSR; GATK4_HAPLOTYPECALLER } from './modules/gatk/main.nf'
 include { SAMTOOLS_CONVERT2BAM } from './modules/samtools/main.nf'
 include { DOWNLOAD_ALIGNMENT; DOWNLOAD_REFERENCE; UPLOAD_VARCALL } from './modules/download_upload/main.nf'
 
@@ -30,6 +30,8 @@ workflow {
         [meta, row.alignment, row.index, extension]
     }
     | set { ch_input_prepare }
+
+
 
     ch_reference = Channel.fromPath(params.fasta).map{ fasta ->
         def meta = [id:"reference"]
@@ -56,17 +58,23 @@ workflow {
     // Download alignment files
     DOWNLOAD_ALIGNMENT(ch_input_prepare)
 
-    // Check if we need to transform the alignment file to bam
-    if (ch_input_prepare.extension == 'cram') {
-        SAMTOOLS_CONVERT2BAM(DOWNLOAD_ALIGNMENT.out.alignment, DOWNLOAD_REFERENCE.out.reference)
-        GATK4_SPLITNCIGARREADS(SAMTOOLS_CONVERT2BAM.out.bam, DOWNLOAD_REFERENCE.out.reference)
-    } else {
-        GATK4_SPLITNCIGARREADS(DOWNLOAD_ALIGNMENT.out.alignment, DOWNLOAD_REFERENCE.out.reference)
-    }
+    // Split the downloaded files based on extension
+    ch_bam_files = DOWNLOAD_ALIGNMENT.out.alignment.filter { meta, alignment, index, extension -> extension == 'bam' }
+    ch_cram_files = DOWNLOAD_ALIGNMENT.out.alignment.filter { meta, alignment, index, extension -> extension == 'cram' }
+
+    // Process bam files directly
+    GATK4_SPLITNCIGARREADS_BAM(ch_bam_files, DOWNLOAD_REFERENCE.out.reference)
+
+    // Process cram files - convert to bam first, then process
+    SAMTOOLS_CONVERT2BAM(ch_cram_files, DOWNLOAD_REFERENCE.out.reference)
+    GATK4_SPLITNCIGARREADS_CRAM(SAMTOOLS_CONVERT2BAM.out.bam, DOWNLOAD_REFERENCE.out.reference)
+
+    // Merge the outputs from both bam and cram processing branches
+    ch_split_reads = GATK4_SPLITNCIGARREADS_BAM.out.bam.mix(GATK4_SPLITNCIGARREADS_CRAM.out.bam)
 
     // BaseRecalibrator
     GATK4_BASERECALIBRATOR(
-        GATK4_SPLITNCIGARREADS.out.bam, 
+        ch_split_reads, 
         DOWNLOAD_REFERENCE.out.reference, 
         DOWNLOAD_REFERENCE.out.dbsnp,
         DOWNLOAD_REFERENCE.out.known_indels,
@@ -75,7 +83,7 @@ workflow {
         DOWNLOAD_REFERENCE.out.small_exac_common_3)
 
     // ApplyBQSR    
-    GATK4_APPLYBQSR(GATK4_SPLITNCIGARREADS.out.bam, GATK4_BASERECALIBRATOR.out.table, DOWNLOAD_REFERENCE.out.reference)
+    GATK4_APPLYBQSR(ch_split_reads, GATK4_BASERECALIBRATOR.out.table, DOWNLOAD_REFERENCE.out.reference)
 
     // HaplotypeCaller
     GATK4_HAPLOTYPECALLER(GATK4_APPLYBQSR.out.bam, DOWNLOAD_REFERENCE.out.reference, DOWNLOAD_REFERENCE.out.dbsnp)
