@@ -6,7 +6,7 @@ process DOWNLOAD_ALIGNMENT {
         tuple val(meta), path(alignment), path(index), val(extension)
 
     output:
-        tuple val(meta), path('*am'), path('*ai'), emit: alignment
+        tuple val(meta), path('*am'), path('*ai'), val(extension), emit: alignment
 
     script:
     """
