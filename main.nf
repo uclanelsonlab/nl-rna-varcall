@@ -19,10 +19,11 @@ workflow {
     | splitCsv( header: true )
     | map { row ->
         // Check if alignment is cram or bam
+        def extension
         if (row.alignment.endsWith('.bam')) {
-            def extension = 'bam'   
+            extension = 'bam'   
         } else if (row.alignment.endsWith('.cram')) {
-            def extension = 'cram'
+            extension = 'cram'
         } else {
             error "Alignment file '${row.alignment}' for sample '${row.sample}' must end with .bam or .cram"
         }
