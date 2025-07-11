@@ -1,6 +1,6 @@
 process SAMTOOLS_CONVERT2BAM {
     tag "${meta.id}"
-    label "Convert alignment file to bam"
+    label "convert_alignment_to_bam"
     container 'quay.io/biocontainers/samtools:1.22--h96c455f_0'
     memory 200.GB
     cpus 48

@@ -1,6 +1,6 @@
 process DOWNLOAD_ALIGNMENT {
     tag "${meta.id}"
-    label "Download alignment files"
+    label "download_alignment_files"
 
     input:
         tuple val(meta), path(alignment), path(index), val(extension)
@@ -17,7 +17,7 @@ process DOWNLOAD_ALIGNMENT {
 
 process UPLOAD_VARCALL {
     tag "${meta.id}"
-    label "Upload variant calling files"
+    label "upload_varcall_files"
 
     input:
         tuple val(meta), path(vcf), path(index)
@@ -31,7 +31,7 @@ process UPLOAD_VARCALL {
 
 process DOWNLOAD_REFERENCE {
     tag "${meta.id}"
-    label "Download reference files"
+    label "download_reference_files"
 
     input:
         tuple val(meta), path(fasta), path(fai), path(dict)
