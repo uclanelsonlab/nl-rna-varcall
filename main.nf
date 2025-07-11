@@ -59,8 +59,8 @@ workflow {
     DOWNLOAD_ALIGNMENT(ch_input_prepare)
 
     // Split the downloaded files based on extension
-    ch_bam_files = DOWNLOAD_ALIGNMENT.out.alignment.filter { meta, alignment, index, extension -> extension == 'bam' }
-    ch_cram_files = DOWNLOAD_ALIGNMENT.out.alignment.filter { meta, alignment, index, extension -> extension == 'cram' }
+    ch_bam_files = DOWNLOAD_ALIGNMENT.out.alignment.filter { meta, alignment, index_file, extension -> extension == 'bam' }
+    ch_cram_files = DOWNLOAD_ALIGNMENT.out.alignment.filter { meta, alignment, index_file, extension -> extension == 'cram' }
 
     // Process bam files directly
     GATK4_SPLITNCIGARREADS_BAM(ch_bam_files, DOWNLOAD_REFERENCE.out.reference)
