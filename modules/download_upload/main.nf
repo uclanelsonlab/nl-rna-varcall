@@ -3,7 +3,7 @@ process DOWNLOAD_ALIGNMENT {
     label "download_alignment_files"
 
     input:
-        tuple val(meta), path(alignment), path(index), val(extension)
+        tuple val(meta), val(alignment), val(index), val(extension)
 
     output:
         tuple val(meta), path('*am'), path('*ai'), val(extension), emit: alignment
