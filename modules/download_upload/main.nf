@@ -34,12 +34,12 @@ process DOWNLOAD_REFERENCE {
     label "download_reference_files"
 
     input:
-        tuple val(meta), path(fasta), path(fai), path(dict)
-        tuple val(meta), path(dbsnp), path(dbsnp_index)
-        tuple val(meta), path(known_indels), path(known_indels_index)
-        tuple val(meta), path(indels_1000G), path(indels_1000G_index)
-        tuple val(meta), path(af_only_gnomad), path(af_only_gnomad_index)
-        tuple val(meta), path(small_exac_common_3), path(small_exac_common_3_index) 
+        tuple val(meta), val(fasta), val(fai), val(dict)
+        tuple val(meta), val(dbsnp), val(dbsnp_index)
+        tuple val(meta), val(known_indels), val(known_indels_index)
+        tuple val(meta), val(indels_1000G), val(indels_1000G_index)
+        tuple val(meta), val(af_only_gnomad), val(af_only_gnomad_index)
+        tuple val(meta), val(small_exac_common_3), val(small_exac_common_3_index) 
 
     output:
         tuple val(meta), path('*.fasta'), path('*.fai'), path('*.dict'), emit: reference
