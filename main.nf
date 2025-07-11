@@ -12,8 +12,7 @@ log.info """\
 
 include { GATK4_SPLITNCIGARREADS; GATK4_BASERECALIBRATOR; GATK4_APPLYBQSR; GATK4_HAPLOTYPECALLER } from './modules/gatk/main.nf'
 include { SAMTOOLS_CONVERT2BAM } from './modules/samtools/main.nf'
-include { DOWNLOAD_ALIGNMENT } from './modules/download_upload/main.nf'
-include { UPLOAD_VARCALL } from './modules/download_upload/main.nf'
+include { DOWNLOAD_ALIGNMENT; DOWNLOAD_REFERENCE; UPLOAD_VARCALL } from './modules/download_upload/main.nf'
 
 workflow {
     Channel.fromPath(params.samplesheet)
