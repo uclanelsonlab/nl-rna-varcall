@@ -42,7 +42,7 @@ process DOWNLOAD_REFERENCE {
         tuple val(meta), val(small_exac_common_3), val(small_exac_common_3_index) 
 
     output:
-        tuple val(meta), path('*.fa???'), path('*.fai'), path('*.dict'), emit: reference
+        tuple val(meta), path('*.fa'), path('*.fai'), path('*.dict'), emit: reference
         tuple val(meta), path('*.dbsnp138.vcf.gz'), path('*.dbsnp138.vcf.gz.tbi'), emit: dbsnp
         tuple val(meta), path('*.known_indels.vcf.gz'), path('*.known_indels.vcf.gz.tbi'), emit: known_indels
         tuple val(meta), path('*.indels_1000G.vcf.gz'), path('*.indels_1000G.vcf.gz.tbi'), emit: indels_1000G
