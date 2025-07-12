@@ -45,7 +45,7 @@ process DOWNLOAD_REFERENCE {
         tuple val(meta), path('*.fa'), path('*.fai'), path('*.dict'), emit: reference
         tuple val(meta), path('*.dbsnp138.vcf.gz'), path('*.dbsnp138.vcf.gz.tbi'), emit: dbsnp
         tuple val(meta), path('*.known_indels.vcf.gz'), path('*.known_indels.vcf.gz.tbi'), emit: known_indels
-        tuple val(meta), path('*.indels_1000G.vcf.gz'), path('*.indels_1000G.vcf.gz.tbi'), emit: indels_1000G
+        tuple val(meta), path('*_standard.indels.hg38.vcf.gz'), path('*_standard.indels.hg38.vcf.gz.tbi'), emit: indels_1000G
         tuple val(meta), path('af-only-gnomad.hg38.vcf.gz'), path('af-only-gnomad.hg38.vcf.gz.tbi'), emit: af_only_gnomad
         tuple val(meta), path('small_exac_common_3.hg38.vcf.gz'), path('small_exac_common_3.hg38.vcf.gz.tbi'), emit: small_exac_common_3
 
