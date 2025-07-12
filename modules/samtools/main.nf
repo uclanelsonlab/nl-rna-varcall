@@ -13,19 +13,20 @@ process SAMTOOLS_CONVERT2BAM {
         tuple val(meta), path('*.bam'), path('*.bai'), emit: bam
 
     script:
-    """
-    # Check if reference files exist
-    if [ ! -f "${fasta}" ]; then
-        echo "Reference FASTA file not found: ${fasta}"
-        exit 1
-    fi
-    
-    if [ ! -f "${fai}" ]; then
-        echo "Reference FAI file not found: ${fai}"
-        exit 1
-    fi
-    
-    samtools view -@ $task.cpus -b -T ${fasta} ${aligned_file} > ${sample_name}.bam
-    samtools index -@ $task.cpus ${sample_name}.bam
-    """
+        def prefix = task.ext.prefix ?: "${meta.id}"
+        """
+        # Check if reference files exist
+        if [ ! -f "${fasta}" ]; then
+            echo "Reference FASTA file not found: ${fasta}"
+            exit 1
+        fi
+        
+        if [ ! -f "${fai}" ]; then
+            echo "Reference FAI file not found: ${fai}"
+            exit 1
+        fi
+        
+        samtools view -@ $task.cpus -b -T ${fasta} ${alignment} > ${prefix}.bam
+        samtools index -@ $task.cpus ${prefix}.bam
+        """
 }
