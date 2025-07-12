@@ -6,7 +6,7 @@ process SAMTOOLS_CONVERT2BAM {
     cpus 48
 
     input:
-        tuple val(meta), path(alignment), path(index)
+        tuple val(meta), path(alignment), path(index), val(extension)
         tuple val(meta2), path(fasta), path(fai), path(dict)
         
     output:
