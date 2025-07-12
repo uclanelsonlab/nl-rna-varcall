@@ -34,12 +34,7 @@ workflow {
 
 
 
-    ch_reference = Channel.fromPath(params.fasta).map{ fasta ->
-        def meta = [id:"reference"]
-        def fai = params.fai ? file(params.fai) : null
-        def dict = params.dict ? file(params.dict) : null
-        [meta, fasta, fai, dict]
-    }.collect()
+    ch_reference = Channel.value([[id:"reference"], params.fasta, params.fai, params.dict])
     ch_dbsnp = Channel.value([[id:"dbsnp138"], params.dbsnp138, params.dbsnp138_index])
     ch_known_indels = Channel.value([[id:"known_indels"], params.known_indels, params.known_indels_index])
     ch_indels_1000G = Channel.value([[id:"indels_1000G"], params.indels_1000G, params.indels_1000G_index])
