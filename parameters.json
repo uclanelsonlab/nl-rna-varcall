@@ -1,9 +1,15 @@
 {
-    "gatk_docker": {
-        "description": "ECR image URI for GATK4 docker image"
-    },
     "sample_name": {
         "description": "Sample Name."
+    },
+    "mosdepth_docker": {
+        "description": "ECR image URI for mosdepth docker image"
+    },
+    "bedtools_docker": {
+        "description": "ECR image URI for bedtools docker image"
+    },
+    "deepvariant_docker": {
+        "description": "ECR image URI for deepvariant docker image"
     },
     "alignment": {
         "description": "CRAM/BAM aligned file"
@@ -17,25 +23,19 @@
     "fai": {
         "description": "Index for the reference fasta file"
     },
-    "dict": {
-        "description": "Dictionary for the reference fasta file"
+    "gencode_bed": {
+        "description": "Gencode BED file"
     },
-    "dbsnp138": {
-        "description": "VCF reference file from dbsnp138"
+    "min_coverage": {
+        "description": "Minimum coverage"
     },
-    "dbsnp138_index": {
-        "description": "Index for dbsnp138 VCF"
+    "model_data": {
+        "description": "DeepVariant model data"
     },
-    "known_indels": {
-        "description": "VCF reference file from  known indels"
+    "model_index": {
+        "description": "DeepVariant model index"
     },
-    "known_indels_index": {
-        "description": "Index for 1000 genomes known indels VCF"
-    },
-    "indels_1000G": {
-        "description": "VCF reference for 1000 genomes indels"
-    },
-    "indels_1000G_index": {
-        "description": "Index for 1000 genomes indels VCF"
+    "model_meta": {
+        "description": "DeepVariant model meta"
     }
 }
