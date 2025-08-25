@@ -22,6 +22,11 @@ process DEEPVARIANT_RUNDEEPVARIANT {
     prefix = task.ext.prefix ?: "${meta.id}"
 
     """
+    # Create symbolic links for the model files with expected names
+    ln -sf ${model_data} model.ckpt.data-00000-of-00001
+    ln -sf ${model_index} model.ckpt.index
+    ln -sf ${model_meta} model.ckpt.meta
+    
     /opt/deepvariant/bin/run_deepvariant \\
         --model_type=WES \\
         --customized_model=model.ckpt \\
@@ -29,7 +34,7 @@ process DEEPVARIANT_RUNDEEPVARIANT {
         --ref=${fasta} \\
         --reads=${input} \\
         --output_vcf=${prefix}.vcf.gz \\
-        --output_gvcf=${prefix}.g.vcf.gz \\    
+        --output_gvcf=${prefix}.g.vcf.gz \\
         --regions=${bed} \\
         --intermediate_results_dir=tmp \\
         --make_examples_extra_args="split_skip_reads=true,channels=''" \\

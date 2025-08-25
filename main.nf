@@ -28,13 +28,12 @@ workflow {
         }
         .collect()
     
-    ch_model = Channel.fromPath(params.model_data)
-        .map { model_data ->
-            def index = params.model_index ? file(params.model_index) : file("model.ckpt.index")
-            def model_meta = params.model_meta ? file(params.model_meta) : file("model.ckpt.meta")
-            return [[id:"model"], model_data, index, model_meta]
-        }
-        .collect()
+    ch_model = Channel.value([
+        [id:"model"],
+        file(params.model_data),
+        file(params.model_index),
+        file(params.model_meta)
+    ])
 
     MOSDEPTH(ch_input_prepare, ch_reference)
 
