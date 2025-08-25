@@ -32,7 +32,8 @@ workflow {
         [id:"model"],
         file(params.model_data),
         file(params.model_index),
-        file(params.model_meta)
+        file(params.model_meta),
+        file(params.model_info),
     ])
 
     MOSDEPTH(ch_input_prepare, ch_reference)

@@ -5,7 +5,7 @@ process DEEPVARIANT_RUNDEEPVARIANT {
         tuple val(meta), path(input), path(index)
         tuple val(meta2), path(fasta), path(fai)
         tuple val(meta3), path(bed)
-        tuple val(meta4), path(model_data), path(model_index), path(model_meta)
+        tuple val(meta4), path(model_data), path(model_index), path(model_meta), path(model_info)
 
     output:
         tuple val(meta), path("*.vcf.gz")               , emit: vcf
@@ -22,11 +22,6 @@ process DEEPVARIANT_RUNDEEPVARIANT {
     prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    # Create symbolic links for the model files with expected names
-    ln -sf ${model_data} model.ckpt.data-00000-of-00001
-    ln -sf ${model_index} model.ckpt.index
-    ln -sf ${model_meta} model.ckpt.meta
-    
     /opt/deepvariant/bin/run_deepvariant \\
         --model_type=WES \\
         --customized_model=model.ckpt \\
