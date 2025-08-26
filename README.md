@@ -1,184 +1,153 @@
 # nl-rna-varcall
 
-A Nextflow pipeline for variant calling from RNA-seq aligned data using GATK4. This pipeline processes BAM/CRAM files and performs comprehensive variant calling with quality control steps.
+A Nextflow pipeline for variant calling from RNA-seq aligned data using DeepVariant with customized models for transcriptomic data.
 
 ## Overview
 
-This pipeline implements a complete RNA-seq variant calling workflow that includes:
+This pipeline processes RNA-seq alignment files (BAM/CRAM) to identify genetic variants using a three-step approach:
 
-- **File Format Support**: Handles both BAM and CRAM alignment files
-- **Quality Control**: SplitNCigarReads for RNA-seq specific processing
-- **Base Quality Recalibration**: Uses multiple known variant databases
-- **Variant Calling**: HaplotypeCaller for sensitive variant detection
-- **Cloud Integration**: Download from and upload to S3 storage
+1. **Coverage Analysis** (Mosdepth): Calculate per-base coverage depth
+2. **Region Filtering** (BedTools): Intersect high-coverage regions with coding sequences
+3. **Variant Calling** (DeepVariant): Call variants using a custom RNA-seq model
 
-## Architecture
+## Workflow
 
 ```mermaid
 flowchart TD
-    A[Samplesheet CSV] --> B[Parse & Validate]
-    B --> C{File Format?}
-    C -->|CRAM| D[Download Alignment]
-    C -->|BAM| D
-    D --> E{Is CRAM?}
-    E -->|Yes| F[SAMtools Convert2BAM]
-    E -->|No| G[GATK4 SplitNCigarReads]
-    F --> G
-    G --> H[GATK4 BaseRecalibrator]
-    H --> I[GATK4 ApplyBQSR]
-    I --> J[GATK4 HaplotypeCaller]
-    J --> K[Upload VCF Files]
-    
-    R1[FASTA] --> G
-    R2[FAI Index] --> G
-    R3[DICT] --> G
-    R4[dbSNP138] --> H
-    R5[Known Indels] --> H
-    R6[1000G Indels] --> H
-    R7[gnomAD AF] --> H
-    R8[ExAC Common] --> H
+    A[RNA-seq Alignment<br/>BAM/CRAM] --> B[MOSDEPTH<br/>Coverage Analysis]
+    C[Reference Genome<br/>FASTA + FAI] --> B
+    B --> D[BEDTOOLS_MERGE_INTERSECT<br/>Filter High-Coverage CDS]
+    E[GENCODE CDS BED] --> D
+    D --> F[DEEPVARIANT_RUNDEEPVARIANT<br/>Variant Calling]
+    A --> F
+    C --> F
+    G[Custom DeepVariant Model] --> F
+    F --> H[VCF + gVCF Output]
 ```
 
-## Pipeline Steps
+## Requirements
 
-1. **Input Validation**: Validates alignment file formats (BAM/CRAM)
-2. **File Download**: Downloads alignment files from S3 if needed
-3. **Format Conversion**: Converts CRAM to BAM if necessary
-4. **SplitNCigarReads**: RNA-seq specific processing for split reads
-5. **BaseRecalibrator**: Quality score recalibration using known variants
-6. **ApplyBQSR**: Applies recalibration tables
-7. **HaplotypeCaller**: Sensitive variant calling
-8. **Upload Results**: Uploads VCF files to S3
+- **Nextflow** >= 22.04.0
+- **Docker** (enabled)
+- **Conda** (enabled)
 
-## Prerequisites
-
-### Alternative Download Method for reference files
-
-You can also download these files using gsutil:
-```bash
-# Example for downloading from Google Cloud Storage
-gsutil cp gs://bucket-name/reference-files/ .
-```
-
-## Input Files
-
-### Samplesheet Format
-
-Create a `samplesheet.csv` file with the following format:
-
-```csv
-sample,alignment,index,s3_path
-CDMD1601,/path/to/CDMD1601.hg38_rna.22.cram,/path/to/CDMD1601.hg38_rna.22.cram.crai,s3://bucket/samples/CDMD1601
-```
-
-**Columns:**
-- `sample`: Sample identifier
-- `alignment`: Path to BAM/CRAM file (local or S3)
-- `index`: Path to BAI/CRAI index file
-- `s3_path`: S3 path for uploading results
-
-> **Supported formats**: BAM (.bam) and CRAM (.cram) files
-
-## Usage
-
-### Basic Run
-
-```bash
-cd /path/to/nl-rna-varcall/
-nextflow run main.nf --samplesheet samplesheet.csv
-```
-
-### With Custom Parameters
-
-```bash
-nextflow run main.nf \
-    --samplesheet samplesheet.csv \
-    --fasta /path/to/reference.fa \
-    --fai /path/to/reference.fa.fai \
-    --dict /path/to/reference.dict
-```
-
-## Outputs
-
-The pipeline generates the following outputs in the `results/` directory:
-
-```
-results/
-├── {sample}.hc.vcf.gz          # Compressed VCF file with variants
-├── {sample}.hc.vcf.gz.tbi      # Tabix index for VCF
-├── {sample}.hc.vcf.gz.md5      # MD5 checksum
-└── versions.yml                 # Software versions used
-```
-
-### Output Files Description
-
-- **VCF Files**: Variant call format files containing detected variants
-- **Index Files**: Tabix indices for efficient VCF querying
-- **Checksums**: MD5 hashes for file integrity verification
-- **Versions**: Complete software version tracking
+### System Requirements
+- **Memory**: 192 GB for DeepVariant process
+- **CPUs**: 48 cores for DeepVariant process
+- **Storage**: Sufficient space for intermediate files and outputs
 
 ## Configuration
 
-### Nextflow Configuration
+### Required Parameters
 
-Update `nextflow.config` with your reference file paths:
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `sample_name` | Sample identifier | `"UDN486800-2931649-MGML0089-FBR1"` |
+| `alignment` | Path to BAM/CRAM file | `"/path/to/sample.cram"` |
+| `alignment_index` | Path to BAM/CRAM index | `"/path/to/sample.cram.crai"` |
+| `fasta` | Reference genome FASTA | `"/path/to/GRCh38.fa"` |
+| `fai` | Reference genome index | `"/path/to/GRCh38.fa.fai"` |
+| `gencode_bed` | GENCODE CDS BED file | `"/path/to/gencode.cds.bed"` |
+| `min_coverage` | Minimum coverage threshold | `3` |
 
-```groovy
-params {
-    fasta = '/path/to/GRCh38.primary_assembly.genome.fa'
-    fai = '/path/to/GRCh38.primary_assembly.genome.fa.fai'
-    dict = '/path/to/GRCh38.primary_assembly.genome.dict'
-    dbsnp138 = '/path/to/Homo_sapiens_assembly38.dbsnp138.vcf.gz'
-    // ... other reference files
-}
+### DeepVariant Model Files
+
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `model_data` | Model data file | `"/path/to/model.ckpt.data-00000-of-00001"` |
+| `model_index` | Model index file | `"/path/to/model.ckpt.index"` |
+| `model_meta` | Model metadata file | `"/path/to/model.ckpt.meta"` |
+| `model_info` | Model info file | `"/path/to/model.ckpt.example_info.json"` |
+
+### Docker Images
+
+| Parameter | Description |
+|-----------|-------------|
+| `mosdepth_docker` | Mosdepth container image URI |
+| `bedtools_docker` | BedTools container image URI |
+| `deepvariant_docker` | DeepVariant container image URI |
+
+## Outputs
+
+The pipeline generates the following outputs in the specified output directory:
+
+### BED Files (`/BED/`)
+- **Coverage BED**: Per-base coverage from Mosdepth
+- **Filtered CDS BED**: High-coverage coding sequences
+
+### Variant Calls (`/VARCALL/`)
+- **VCF file** (`*.vcf.gz`): Compressed variant calls
+- **VCF index** (`*.vcf.gz.tbi`): Index for VCF file
+- **gVCF file** (`*.g.vcf.gz`): Genomic VCF with all sites
+- **gVCF index** (`*.g.vcf.gz.tbi`): Index for gVCF file
+- **HTML Report** (`*.visual_report.html`): DeepVariant visual report
+
+## AWS HealthOmics Deployment
+
+### Create Pipeline Package
+
+```bash
+git clone https://github.com/uclanelsonlab/nl-rna-varcall.git 
+cd nl-rna-varcall/
+
+# Create deployment package
+zip -r nl-rna-varcall.zip *
 ```
 
-## Quality Control
+### Test Data
 
-The pipeline includes several quality control steps:
+You can validate the pipeline using these reference samples:
 
-1. **Input Validation**: Ensures alignment files are in supported formats
-2. **SplitNCigarReads**: Handles RNA-seq specific split reads
-3. **Base Quality Recalibration**: Improves base quality scores using known variants
-4. **Multiple Reference Databases**: Uses comprehensive variant databases for recalibration
+```bash
+# RNA-seq sample
+s3://gatk-test-data/rna_bam/NA12878_b37/NA12878.bam
+s3://gatk-test-data/rna_bam/NA12878_b37/NA12878.bam.bai
 
-## Performance
+# Reference files (hg19/b37)
+s3://broad-references/hg19/v0/human_g1k_v37_decoy.fasta
+s3://broad-references/hg19/v0/human_g1k_v37_decoy.fasta.fai
+s3://broad-references/hg19/v0/human_g1k_v37_decoy.dict
+```
 
-- **Parallel Processing**: Nextflow enables parallel processing of multiple samples
-- **Resource Management**: Configurable CPU and memory requirements
-- **Resume Capability**: Can resume from failed steps
-- **Cloud Integration**: Native S3 support for input/output
+## Pipeline Architecture
+
+### Modules
+
+- **`modules/mosdepth/`**: Coverage depth calculation
+- **`modules/bedtools/`**: BED file operations and filtering
+- **`modules/deepvariant/`**: Variant calling with custom models
+
+### Key Features
+
+- **Custom DeepVariant Models**: Optimized for RNA-seq data
+- **Coverage-based Filtering**: Focus on high-confidence regions
+- **CDS-specific Analysis**: Target coding sequences for variant calling
+- **Scalable Processing**: Configurable CPU/memory allocation
+- **Docker Integration**: Consistent execution environments
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Missing Reference Files**: Ensure all reference files are downloaded and paths are correct
-2. **Memory Issues**: Increase memory allocation for large files
-3. **S3 Access**: Verify AWS credentials and S3 permissions
-4. **File Format Errors**: Check that alignment files are valid BAM/CRAM
+1. **Model File Staging**: Ensure all DeepVariant model files are accessible
+2. **Memory Requirements**: DeepVariant requires substantial memory (192GB)
+3. **File Permissions**: Check read permissions for all input files
+4. **Container Access**: Verify Docker images are accessible
 
-### Logs and Debugging
+### Debugging
+
+Check Nextflow logs for detailed error information:
 
 ```bash
-# View detailed logs
 nextflow log
-
-# Resume from specific step
-nextflow run main.nf -resume
-
-# Check resource usage
-nextflow run main.nf -with-trace
 ```
 
-## Citation
+Examine work directories for process-specific errors:
 
-If you use this pipeline in your research, please cite:
-
-- Nextflow: [Di Tommaso et al. (2017)](https://www.nature.com/nbt/journal/v35/n4/full/nbt.3820.html)
-- GATK4: [McKenna et al. (2010)](https://genome.cshlp.org/content/20/9/1297)
-- SAMtools: [Li et al. (2009)](https://academic.oup.com/bioinformatics/article/25/16/2078/204688)
+```bash
+ls -la work/
+```
 
 ## License
 
-This pipeline is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the terms specified in the LICENSE file.

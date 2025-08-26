@@ -1,0 +1,44 @@
+{
+    "sample_name": {
+        "description": "Sample Name."
+    },
+    "mosdepth_docker": {
+        "description": "ECR image URI for mosdepth docker image"
+    },
+    "bedtools_docker": {
+        "description": "ECR image URI for bedtools docker image"
+    },
+    "deepvariant_docker": {
+        "description": "ECR image URI for deepvariant docker image"
+    },
+    "alignment": {
+        "description": "CRAM/BAM aligned file"
+    },
+    "alignment_index": {
+        "description": "Index for the BAM/CRAM file"
+    },
+    "fasta": {
+        "description": "Reference fasta file"
+    },
+    "fai": {
+        "description": "Index for the reference fasta file"
+    },
+    "gencode_bed": {
+        "description": "Gencode BED file"
+    },
+    "min_coverage": {
+        "description": "Minimum coverage"
+    },
+    "model_data": {
+        "description": "DeepVariant model data"
+    },
+    "model_index": {
+        "description": "DeepVariant model index"
+    },
+    "model_meta": {
+        "description": "DeepVariant model meta"
+    },
+    "model_info": {
+        "description": "DeepVariant model info"
+    }
+}

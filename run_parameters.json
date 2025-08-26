@@ -1,0 +1,16 @@
+{
+    "mosdepth_docker": "224597534425.dkr.ecr.us-west-2.amazonaws.com/mosdepth:0.3.1--h4dc83fb_1",
+    "bedtools_docker": "224597534425.dkr.ecr.us-west-2.amazonaws.com/bedtools:2.23.0--h5b5514e_6",
+    "deepvariant_docker": "224597534425.dkr.ecr.us-west-2.amazonaws.com/deepvariant:1.3.0",
+    "sample_name": "UDN486800-2931649-MGML0089-FBR1",
+    "alignment":  "s3://ucla-rare-diseases/UCLA-UDN/Analysis/UDN_cases/UDN486800/UDN486800-P_fibroblast_rnaseq/hg38/alignment/UDN486800-2931649-MGML0089-FBR1.hg38_rna.normal.cram",
+    "alignment_index": "s3://ucla-rare-diseases/UCLA-UDN/Analysis/UDN_cases/UDN486800/UDN486800-P_fibroblast_rnaseq/hg38/alignment/UDN486800-2931649-MGML0089-FBR1.hg38_rna.normal.cram.crai",
+    "fasta": "s3://ucla-rare-diseases/UCLA-UDN/assets/reference/gencode43/GRCh38.p13/GRCh38.primary_assembly.genome.fa",
+    "fai": "s3://ucla-rare-diseases/UCLA-UDN/assets/reference/gencode43/GRCh38.p13/GRCh38.primary_assembly.genome.fa.fai",
+    "gencode_bed": "s3://ucla-rare-diseases/UCLA-UDN/assets/reference/gencode43/GRCh38.p13/gencode.v43.basic.annotation.cds.bed",
+    "min_coverage": 3,
+    "model_data": "s3://ucla-rare-diseases/UCLA-UDN/assets/deepvariant/rnaseq/model.ckpt.data-00000-of-00001",
+    "model_index": "s3://ucla-rare-diseases/UCLA-UDN/assets/deepvariant/rnaseq/model.ckpt.index",
+    "model_meta": "s3://ucla-rare-diseases/UCLA-UDN/assets/deepvariant/rnaseq/model.ckpt.meta",
+    "model_info": "s3://ucla-rare-diseases/UCLA-UDN/assets/deepvariant/rnaseq/model.ckpt.example_info.json"
+}
