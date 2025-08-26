@@ -1,3 +1,3 @@
-sample,alignment,index
-NA12878,/Users/gcarvalhoneto/Documents/repos/nl-rna-varcall/NA12878.bam,/Users/gcarvalhoneto/Documents/repos/nl-rna-varcall/NA12878.bam.bai
-CDMD1601,/var/snap/amazon-ssm-agent/9881/data/variant-call/CDMD1601.hg38_rna.22.cram,/var/snap/amazon-ssm-agent/9881/data/variant-call/CDMD1601.hg38_rna.22.cram.crai
+sample,alignment,index,s3_path
+NB-8204-M-muscle_S3_L005,s3://ucla-rare-diseases/UCLA-UDN/Analysis/CDMD-cases/CDMD8205/CDMD8204-M_muscle_rnaseq-2/hg38/alignment/NB-8204-M-muscle_S3_L005.hg38_rna.normal.cram,s3://ucla-rare-diseases/UCLA-UDN/Analysis/CDMD-cases/CDMD8205/CDMD8204-M_muscle_rnaseq-2/hg38/alignment/NB-8204-M-muscle_S3_L005.hg38_rna.normal.cram.crai,s3://ucla-rare-diseases/UCLA-UDN/Analysis/CDMD-cases/CDMD8205/CDMD8204-M_muscle_rnaseq-2/hg38/
+NB-8205-P-muscle_S4_L005,s3://ucla-rare-diseases/UCLA-UDN/Analysis/CDMD-cases/CDMD8205/CDMD8205-P_muscle_rnaseq-2/hg38/alignment/NB-8205-P-muscle_S4_L005.hg38_rna.normal.cram,s3://ucla-rare-diseases/UCLA-UDN/Analysis/CDMD-cases/CDMD8205/CDMD8205-P_muscle_rnaseq-2/hg38/alignment/NB-8205-P-muscle_S4_L005.hg38_rna.normal.cram.crai,s3://ucla-rare-diseases/UCLA-UDN/Analysis/CDMD-cases/CDMD8205/CDMD8205-P_muscle_rnaseq-2/hg38/
